@@ -1,0 +1,236 @@
+.todo {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+
+  .todo-header {
+    display: flex;
+    height: 4rem;
+    padding: 1.8rem 2rem 2rem 1.9rem;
+    .todo-title {
+      font-size: 2rem;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      flex-grow: 1;
+      .sidebar-toggle-button {
+        width: 3rem;
+        height: 3rem;
+      }
+      .title-content {
+        padding: 1rem;
+        display: flex;
+        .title {
+          display: flex;
+          padding: 0.7rem;
+          align-items: center;
+        }
+        .more-options {
+          padding: 0.7rem;
+        }
+        .more-options:hover {
+          background-color: #ffffff;
+        }
+      }
+      .view-options {
+        display: flex;
+        gap: 0.5rem;
+        .list,
+        .grid {
+          padding: 0.7rem;
+        }
+        .list:hover,
+        .grid:hover {
+          background-color: #ffffff;
+        }
+        .active {
+          border-bottom: 0.2rem solid #2564cf;
+        }
+      }
+    }
+    .todo-options {
+      display: flex;
+      flex-basis: 8rem;
+    }
+  }
+
+  .add-todo {
+    display: flex;
+    flex-direction: column;
+    margin: 0.8rem 2rem 0;
+    padding: 1rem;
+    border-bottom: 0.5px solid #c0bfbf;
+    border-radius: 0.5rem 0.5rem 0 0;
+    box-shadow: -1px -1px 5px -1px rgba(0, 0, 0, 0.5);
+    background-color: #ffffff;
+    .input-field {
+      display: flex;
+      width: 100%;
+      padding: 0.5rem 2rem;
+      gap: 1.5rem;
+      .input-section {
+        flex-grow: 1;
+        width: 100%;
+        input {
+          font-size: 1.3rem;
+          font-weight: 100;
+          color: #adacac;
+          height: 100%;
+          width: 100%;
+          border: 0;
+          background-color: transparent;
+        }
+        input:focus {
+          outline: 0;
+        }
+      }
+    }
+  }
+  .add-todo-options {
+    display: flex;
+    justify-content: flex-start;
+    margin: 0 2rem 0.8rem;
+    padding: 1rem;
+    border-radius: 0 0 0.5rem 0.5rem;
+    box-shadow: 1px 2px 5px -1px rgba(0, 0, 0, 0.5);
+    background-color: #faf9f8;
+    .todo-options {
+      display: flex;
+      padding: 0.5rem;
+    }
+    .todo-options:hover {
+      background-color: #ffffff;
+    }
+    .add-todo-button {
+      background-color: transparent;
+      width: 4rem;
+      padding-left: 80%;
+      button {
+        width: 100%;
+        height: 100%;
+        font-size: 1.2rem;
+        color: #2564cf;
+        background-color: trffffffansparent;
+        border: 0;
+      }
+    }
+  }
+  .todo-body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    margin: 0.8rem 2rem;
+    background-color: #ffffff;
+    border-radius: 0.5rem 0.5rem 0 0;
+    .completed {
+      width: 100%;
+      background-color: #faf9f8;
+      display: flex;
+      font-size: 1.5rem;
+      font-weight: 800;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      .completed-actions{
+        display: flex;
+        p {
+          padding: 1rem;
+        }
+        .counter {
+          font-weight: 600;
+          color: #363636;
+        }
+      }
+    }
+    .todo-list-header {
+      width: 100%;
+      font-size: 1.2rem;
+      display: flex;
+      font-weight: 100;
+      justify-content: flex-start;
+      align-items: center;
+      background-color: #ffffff;
+      .radiobtn {
+        height: 3rem;
+        width: 3rem;
+        display: flex;
+        margin-left:1rem ;
+        padding: 0.2rem 0.5rem;
+        align-items: center;
+      }
+      .task {
+        height: 3rem;
+        width: 50%;
+        display: flex;
+        padding: 0.2rem 0.5rem;
+        align-items: center;
+      }
+      .due-time {
+        height: 3rem;
+        width: 10%;
+        display: flex;
+        padding: 0.2rem 0.5rem;
+        align-items: center;
+      }
+      .important {
+        height: 3rem;
+        width: 10%;
+        display: flex;
+        padding: 0.2rem 0.5rem;
+        align-items: center;
+      }
+    }
+    .todo-list,
+    .todo-list-completed {
+      width: 100%;
+      font-size: 1.2rem;
+      display: flex;
+      font-weight: 100;
+      justify-content: flex-start;
+      align-items: center;
+      background-color: #ffffff;
+      .radiobtn:hover,
+      .task:hover,
+      .due-time:hover,
+      .important:hover {
+        border: 0.1rem solid #676767;
+      }
+      .radiobtn {
+        height: 3rem;
+        width: 3rem;
+        margin-left:1rem ;
+        display: flex;
+        padding: 0.2rem 0.5rem;
+        align-items: center;
+      }
+      .task {
+        display: flex;
+        padding: 0.2rem 0.5rem;
+        align-items: center;
+        height: 3rem;
+        width: 50%;
+      }
+      .due-time {
+        height: 3rem;
+        width: 10%;
+        display: flex;
+        padding: 0.2rem 0.5rem;
+        align-items: center;
+      }
+      .important {
+        height: 3rem;
+        width: 10%;
+        display: flex;
+        padding: 0.2rem 0.5rem;
+        align-items: center;
+      }
+    }
+    .todo-list-completed {
+      .task {
+        text-decoration: line-through;
+      }
+    }
+  }
+}
