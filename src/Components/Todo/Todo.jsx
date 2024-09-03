@@ -8,32 +8,29 @@ import expandIcon from "../../assets/expand.svg";
 import rightArrow from "../../assets/right.svg";
 import { Button } from "../Button/Button";
 import { layouts, addTodoOptions } from "../../constants";
+import { useLocation } from "react-router-dom";
+
 import "./todo.scss";
 
 export const Todo = (props) => {
+  let location = useLocation();
+  location = location.pathname.split(":");
+  location = location[location.length - 1].replaceAll("%20", " ");
+
   const [activeLayout, setActiveLayout] = useState("grid");
   const [todo, setTodo] = useState("");
   const [focus, setFocus] = useState(false);
-  const [incompleteTodos, setIncompleteTodos] = useState([]);
-  const [completedTodos, setCompletedTodos] = useState([]);
   const [expandCompleted, setExpandCompleted] = useState(false);
 
-  const markCompleted = (todoIndex) => {
-    setCompletedTodos([...completedTodos, incompleteTodos[todoIndex]]);
-    incompleteTodos.splice(todoIndex, 1);
-  };
-  const markIncomplete = (todoIndex) => {
-    setIncompleteTodos([...incompleteTodos, completedTodos[todoIndex]]);
-    completedTodos.splice(todoIndex, 1);
-  };
   const addTodo = () => {
     setFocus(false);
-    setIncompleteTodos([
-      ...incompleteTodos,
+    props?.setIncompleteTodos([
+      ...props?.incompleteTodos,
       { title: todo, due: "", isImportant: false, isCompleted: false },
     ]);
     setTodo("");
   };
+
   const expand = () => {
     setExpandCompleted(!expandCompleted);
   };
@@ -44,164 +41,194 @@ export const Todo = (props) => {
     if (activeLayout == "list") setActiveLayout("grid");
     else setActiveLayout("list");
   };
+  const editMenuToggle = () => {
+    props?.setMenuToggle(!menuToggle);
+  };
+
   return (
-    <div className="todo">
-      <div className="todo-header">
-        <div className="todo-title">
-          {!props?.sidebar ? (
-            <div className="sidebar-toggle-button">
-              <Button
-                source={toggle}
-                alt="sidebar toggle"
-                handleClick={props?.handleClick}
-              />
-            </div>
-          ) : (
-            <div className="sidebar-toggle-button">
-              <Button source={list} alt="todo icon" handleClick={() => null} />
-            </div>
-          )}
-          <div className="title-content">
-            <div className="title">{props?.title ? props?.title : "Tasks"}</div>
-            <div className="more-options">
-              <Button
-                source={dots}
-                alt="more options"
-                handleClick={() => {
-                  return 0;
-                }}
-              />
-            </div>
-            <div className="view-options">
-              {layouts.map((layout, layoutIndex) => {
-                return (  
-                  <div
-                    key={layoutIndex}
-                    className={`${layout?.name} ${
-                      activeLayout == layout?.name ? "active" : ""
-                    }`}
-                  >
-                    <Button
-                      source={layout?.icon}
-                      alt={layout?.name}
-                      handleClick={changeActiveLayout}
-                    />
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-        <div className="todo-options">
-          <Button
-            source={sort}
-            alt="sort"
-            handleClick={() => {
-              return 0;
-            }}
-          />
-          <Button
-            source={groupLeft}
-            alt="Group Left"
-            handleClick={() => {
-              return 0;
-            }}
-          />
-        </div>
-      </div>
-      <div className="add-todo">
-        <div className="input-field">
-          <img src={list} width="30px" alt="" />
-          <div className="input-section">
-            <input
-              type="text"
-              value={todo}
-              onChange={(event) => setTodo(event.target.value)}
-              onKeyDown={(event) => handleEnter(event)}
-              onFocus={() => setFocus(!focus)}
-            />
-          </div>
-        </div>
-      </div>
-      {focus ? (
-        <div className="add-todo-options">
-          {addTodoOptions.map((option, optionIndex) => {
-            return (
-              <div className="todo-options" key={optionIndex}>
+    <>
+      <div className="todo">
+        <div className="todo-header">
+          <div className="todo-title">
+            {!props?.sidebar ? (
+              <div className="sidebar-toggle-button">
                 <Button
-                  source={option?.icon}
-                  alt={option?.name}
-                  handleClick={null}
+                  source={toggle}
+                  alt="sidebar toggle"
+                  handleClick={props?.handleClick}
                 />
               </div>
-            );
-          })}
-          <div className="add-todo-button">
-            <button onClick={addTodo}> Add </button>
-          </div>
-        </div>
-      ) : (
-        <></>
-      )}
-      <div className="todo-body">
-        <div className="todo-list-header">
-          <div className="radiobtn">|||</div>
-          <div className="task">Title</div>
-          <div className="due-time">Due Date</div>
-          <div className="important">Importance</div>
-        </div>
-        {incompleteTodos.map((todo, todoIndex) => {
-          return (
-            <div className="todo-list" key={todoIndex}>
-              <div
-                className="radiobtn"
-                onClick={() => markCompleted(todoIndex)}
-              >
-                {todo?.isCompleted}
+            ) : (
+              <div className="sidebar-toggle-button">
+                <Button
+                  source={list}
+                  alt="todo icon"
+                  handleClick={() => null}
+                />
               </div>
-              <div className="task" onClick={editMenuToggle}>{todo?.title}</div>
-              <div className="due-time">{todo?.due}</div>
-              <div className="important">{todo?.isImportant}</div>
-            </div>
-          );
-        })}
-        {completedTodos.length > 0 ? (
-          <div className="completed">
-            <div className="completed-actions">
-              <Button
-                source={`${!expandCompleted ? rightArrow : expandIcon}`}
-                alt="expand"
-                handleClick={expand}
-              />
-              <p>Completed</p>
-              <p className="counter">{completedTodos.length}</p>
-            </div>
-            {expandCompleted ? (
-              <div className="completed">
-                {completedTodos.map((todo, todoIndex) => {
+            )}
+            <div className="title-content">
+              <div className="title">
+                {props?.title ? props?.title : location}
+              </div>
+              <div className="more-options">
+                <Button
+                  source={dots}
+                  alt="more options"
+                  handleClick={() => {
+                    return 0;
+                  }}
+                />
+              </div>
+              <div className="view-options">
+                {layouts.map((layout, layoutIndex) => {
                   return (
-                    <div className="todo-list-completed" key={todoIndex}>
-                      <div
-                        className="radiobtn"
-                        onClick={() => markIncomplete(todoIndex)}
-                      >
-                        {todo?.isCompleted}
-                      </div>
-                      <div className="task">{todo?.title}</div>
-                      <div className="due-time">{todo?.due}</div>
-                      <div className="important">{todo?.isImportant}</div>
+                    <div
+                      key={layoutIndex}
+                      className={`${layout?.name} ${
+                        activeLayout == layout?.name ? "active" : ""
+                      }`}
+                    >
+                      <Button
+                        source={layout?.icon}
+                        alt={layout?.name}
+                        handleClick={changeActiveLayout}
+                      />
                     </div>
                   );
                 })}
               </div>
-            ) : (
-              <></>
-            )}
+            </div>
+          </div>
+          <div className="todo-options">
+            <Button
+              source={sort}
+              alt="sort"
+              handleClick={() => {
+                return 0;
+              }}
+            />
+            <Button
+              source={groupLeft}
+              alt="Group Left"
+              handleClick={() => {
+                return 0;
+              }}
+            />
+          </div>
+        </div>
+        <div className="add-todo">
+          <div className="input-field">
+            <img src={list} width="30px" alt="" />
+            <div className="input-section">
+              <input
+                type="text"
+                value={todo}
+                onChange={(event) => setTodo(event.target.value)}
+                onKeyDown={(event) => handleEnter(event)}
+                onFocus={() => setFocus(!focus)}
+              />
+            </div>
+          </div>
+        </div>
+        {focus ? (
+          <div className="add-todo-options">
+            {addTodoOptions.map((option, optionIndex) => {
+              return (
+                <div className="todo-options" key={optionIndex}>
+                  <Button
+                    source={option?.icon}
+                    alt={option?.name}
+                    handleClick={null}
+                  />
+                </div>
+              );
+            })}
+            <div className="add-todo-button">
+              <button onClick={addTodo}> Add </button>
+            </div>
           </div>
         ) : (
           <></>
         )}
+        <div className="todo-body">
+          <div className="todo-list-header">
+            <div className="radiobtn">|||</div>
+            <div className="task">Title</div>
+            <div className="due-time">Due Date</div>
+            <div className="important">Importance</div>
+          </div>
+          {props?.incompleteTodos.map((todo, todoIndex) => {
+            return (
+              <div className="todo-list" key={todoIndex}>
+                <div
+                  className="radiobtn"
+                  onClick={() => props?.markCompleted(todoIndex)}
+                >
+                  {todo?.isCompleted}
+                </div>
+                <div className="task" onClick={editMenuToggle}>
+                  {todo?.title}
+                </div>
+                <div className="due-time">{todo?.due}</div>
+                <div className="important">{todo?.isImportant}</div>
+              </div>
+            );
+          })}
+          {props?.completedTodos.length > 0 ? (
+            <div className="completed">
+              <div className="completed-actions">
+                <Button
+                  source={`${!expandCompleted ? rightArrow : expandIcon}`}
+                  alt="expand"
+                  handleClick={expand}
+                />
+                <p>Completed</p>
+                <p className="counter">{props?.completedTodos.length}</p>
+              </div>
+              {expandCompleted ? (
+                <div className="completed">
+                  {props?.completedTodos.map((todo, todoIndex) => {
+                    return (
+                      <div className="todo-list-completed" key={todoIndex}>
+                        <div
+                          className="radiobtn"
+                          onClick={() => props?.markIncomplete(todoIndex)}
+                        >
+                          {todo?.isCompleted}
+                        </div>
+                        <div className="task">{todo?.title}</div>
+                        <div className="due-time">{todo?.due}</div>
+                        <div className="important">{todo?.isImportant}</div>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <></>
+              )}
+            </div>
+          ) : (
+            <></>
+          )}
+        </div>
       </div>
-    </div>
+
+      <div className="todo-editor">
+        <div className="add-step">
+          <div className="new-list">
+            {/* <img src={plus} width="30px" className="icon" alt="Add new list" /> */}
+            {/* <input
+      type="text"
+      className="content-name"
+      placeholder="New List"
+      onKeyDown={onEnter}
+      value={listName}
+      onChange={(event) => setListName(event.target.value)}
+    /> */}
+          </div>
+        </div>
+      </div>
+    </>
   );
 };

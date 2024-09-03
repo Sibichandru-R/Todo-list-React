@@ -7,7 +7,10 @@ import listIcon from "../../assets/list.svg";
 import plus from "../../assets/plus.svg";
 import left from "../../assets/group-left.svg";
 import "./sidebar.scss";
+import { useNavigate } from "react-router-dom";
 export const Sidebar = (props) => {
+
+  const navigate = useNavigate();
   const [list, setList] = useState([]);
   const [listName, setListName] = useState("");
   const [isActive, setIsActive] = useState("My Day");
@@ -30,7 +33,7 @@ export const Sidebar = (props) => {
             <div
               className={`${isActive == content?.name ? "active" : ""} contents`}
               key={contentIndex}
-              onClick={() => setIsActive(content?.name)}
+              onClick={() => {setIsActive(content?.name);navigate(`/todo/:${content?.name}`)}}
             >
               <SidebarContent
                 contentName={content?.name}
@@ -46,7 +49,7 @@ export const Sidebar = (props) => {
             <div
               className={`${isActive == list?.name ? "active" : ""} contents`}
               key={listIndex}
-              onClick={() => setIsActive(list?.name)}
+              onClick={() => {setIsActive(list?.name);navigate(`/todo/:${list?.name}`)}}
             >
               <SidebarContent
                 contentName={list?.name}
