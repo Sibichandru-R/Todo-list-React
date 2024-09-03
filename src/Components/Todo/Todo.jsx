@@ -1,13 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import dots from "../../assets/dots-horizontal.svg";
 import toggle from "../../assets/toggle.svg";
 import sort from "../../assets/sort.svg";
 import groupLeft from "../../assets/group-left.svg";
-import list from "../../assets/list.svg";
+import listIcon from "../../assets/list.svg";
 import expandIcon from "../../assets/expand.svg";
 import rightArrow from "../../assets/right.svg";
 import { Button } from "../Button/Button";
-import { layouts, addTodoOptions } from "../../constants";
+import { layouts, addTodoOptions, defaultList } from "../../constants";
 import { useLocation } from "react-router-dom";
 
 import "./todo.scss";
@@ -16,20 +16,48 @@ export const Todo = (props) => {
   let location = useLocation();
   location = location.pathname.split(":");
   location = location[location.length - 1].replaceAll("%20", " ");
+  const [name, setName] = useState(location);
+  const data = props?.todos?.custom.find((item) => item.name == name);
 
   const [activeLayout, setActiveLayout] = useState("grid");
   const [todo, setTodo] = useState("");
   const [focus, setFocus] = useState(false);
+  let list = props?.todos?.custom;
   const [expandCompleted, setExpandCompleted] = useState(false);
+  const [incompleteTodos, setIncompleteTodos] = useState(
+    data?.todos?.incompleteTodos
+  );
+  console.log(data);
+  
+  const [completedTodos, setCompletedTodos] = useState(
+    data?.todos?.completedTodos
+  );
+  const [menuToggle, setMenuToggle] = useState(false);
+
+  const markCompleted = (todoIndex) => {
+    setCompletedTodos([...completedTodos, incompleteTodos[todoIndex]]);
+    setIncompleteTodos(incompleteTodos);
+    incompleteTodos.splice(todoIndex, 1);
+  };
+  const markIncomplete = (todoIndex) => {
+    setIncompleteTodos([...incompleteTodos, completedTodos[todoIndex]]);
+    completedTodos.splice(todoIndex, 1);
+  };
 
   const addTodo = () => {
     setFocus(false);
-    props?.setIncompleteTodos([
-      ...props?.incompleteTodos,
+    setIncompleteTodos([
+      ...incompleteTodos,
       { title: todo, due: "", isImportant: false, isCompleted: false },
     ]);
     setTodo("");
   };
+  useEffect(() => {
+    const index = props?.todos?.custom?.findIndex((e) => e.name == name);
+    list[index].todos.completedTodos = completedTodos;
+    list[index].todos.incompleteTodos = incompleteTodos;
+    props?.setTodos({ default: props?.todos?.default, custom: list });
+  }, [incompleteTodos, completedTodos]);
 
   const expand = () => {
     setExpandCompleted(!expandCompleted);
@@ -42,7 +70,8 @@ export const Todo = (props) => {
     else setActiveLayout("list");
   };
   const editMenuToggle = () => {
-    props?.setMenuToggle(!menuToggle);
+    setMenuToggle(!menuToggle);
+    console.log(menuToggle);
   };
 
   return (
@@ -61,16 +90,14 @@ export const Todo = (props) => {
             ) : (
               <div className="sidebar-toggle-button">
                 <Button
-                  source={list}
+                  source={listIcon}
                   alt="todo icon"
                   handleClick={() => null}
                 />
               </div>
             )}
             <div className="title-content">
-              <div className="title">
-                {props?.title ? props?.title : location}
-              </div>
+              <div className="title">{props?.title ? props?.title : name}</div>
               <div className="more-options">
                 <Button
                   source={dots}
@@ -119,7 +146,7 @@ export const Todo = (props) => {
         </div>
         <div className="add-todo">
           <div className="input-field">
-            <img src={list} width="30px" alt="" />
+            <img src={listIcon} width="30px" alt="" />
             <div className="input-section">
               <input
                 type="text"
@@ -158,12 +185,12 @@ export const Todo = (props) => {
             <div className="due-time">Due Date</div>
             <div className="important">Importance</div>
           </div>
-          {props?.incompleteTodos.map((todo, todoIndex) => {
+          {incompleteTodos.map((todo, todoIndex) => {
             return (
               <div className="todo-list" key={todoIndex}>
                 <div
                   className="radiobtn"
-                  onClick={() => props?.markCompleted(todoIndex)}
+                  onClick={() => markCompleted(todoIndex)}
                 >
                   {todo?.isCompleted}
                 </div>
@@ -175,7 +202,7 @@ export const Todo = (props) => {
               </div>
             );
           })}
-          {props?.completedTodos.length > 0 ? (
+          {completedTodos.length > 0 ? (
             <div className="completed">
               <div className="completed-actions">
                 <Button
@@ -184,16 +211,16 @@ export const Todo = (props) => {
                   handleClick={expand}
                 />
                 <p>Completed</p>
-                <p className="counter">{props?.completedTodos.length}</p>
+                <p className="counter">{completedTodos.length}</p>
               </div>
               {expandCompleted ? (
                 <div className="completed">
-                  {props?.completedTodos.map((todo, todoIndex) => {
+                  {completedTodos.map((todo, todoIndex) => {
                     return (
                       <div className="todo-list-completed" key={todoIndex}>
                         <div
                           className="radiobtn"
-                          onClick={() => props?.markIncomplete(todoIndex)}
+                          onClick={() => markIncomplete(todoIndex)}
                         >
                           {todo?.isCompleted}
                         </div>
@@ -213,12 +240,12 @@ export const Todo = (props) => {
           )}
         </div>
       </div>
-
-      <div className="todo-editor">
-        <div className="add-step">
-          <div className="new-list">
-            {/* <img src={plus} width="30px" className="icon" alt="Add new list" /> */}
-            {/* <input
+      {menuToggle ? (
+        <div className="todo-editor">
+          <div className="add-step">
+            <div className="new-list">
+              {/* <img src={plus} width="30px" className="icon" alt="Add new list" /> */}
+              {/* <input
       type="text"
       className="content-name"
       placeholder="New List"
@@ -226,9 +253,12 @@ export const Todo = (props) => {
       value={listName}
       onChange={(event) => setListName(event.target.value)}
     /> */}
+            </div>
           </div>
         </div>
-      </div>
+      ) : (
+        <div></div>
+      )}
     </>
   );
 };

@@ -9,8 +9,8 @@ import star from "./assets/sidebar-body/star.svg";
 import home from "./assets/sidebar-body/home.svg";
 import sun from "./assets/sidebar-body/sun.svg";
 import user from "./assets/sidebar-body/user.svg";
-import repeat from './assets/repeat.svg'
-import remainder from './assets/remainder.svg'
+import repeat from "./assets/repeat.svg";
+import remainder from "./assets/remainder.svg";
 
 export const sidebarContent = [
   { name: "My Day", icon: sun },
@@ -31,4 +31,12 @@ export const addTodoOptions = [
   { name: "calender", icon: calender },
   { name: "remind me", icon: remainder },
   { name: "repeat", icon: repeat },
+];
+
+export const defaultList = [
+  "My Day",
+  "Important",
+  "Planned",
+  "Assigned to me",
+  "Tasks",
 ];

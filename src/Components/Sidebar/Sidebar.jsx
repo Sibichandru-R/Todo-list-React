@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "../Button/Button";
 import { SidebarContent } from "../SidebarContent/SidebarContent";
 import { sidebarContent, sidebarFooterIcons } from "../../constants";
@@ -7,33 +7,49 @@ import listIcon from "../../assets/list.svg";
 import plus from "../../assets/plus.svg";
 import left from "../../assets/group-left.svg";
 import "./sidebar.scss";
-import { useNavigate } from "react-router-dom";
+import { redirect, replace, useNavigate } from "react-router-dom";
 export const Sidebar = (props) => {
-
   const navigate = useNavigate();
-  const [list, setList] = useState([]);
+  const [list, setList] = useState(props?.todos?.custom);
   const [listName, setListName] = useState("");
   const [isActive, setIsActive] = useState("My Day");
 
   const onEnter = (event) => {
     event.key == "Enter"
-      ? setList([...list, { name: listName, isOpen: false }]) & setListName("")
+      ? setList([
+          ...list,
+          {
+            name: listName,
+            todos: {
+              completedTodos: [],
+              incompleteTodos: [],
+            },
+          },
+        ]) & setListName("")
       : null;
   };
+  useEffect(() => {
+    props?.setTodos({ default: props?.todos?.default, custom: list });
+  }, [list]);
   return props.sidebar ? (
     <div className="sidebar-open">
       <div className="sidebar-header">
         <div className="sidebar-toggle-button">
-          <Button source={toggle} alt='' handleClick={props.handleClick} />
+          <Button source={toggle} alt="" handleClick={props.handleClick} />
         </div>
       </div>
       <div className="sidebar-body">
         {sidebarContent.map((content, contentIndex) => {
           return (
             <div
-              className={`${isActive == content?.name ? "active" : ""} contents`}
+              className={`${
+                isActive == content?.name ? "active" : ""
+              } contents`}
               key={contentIndex}
-              onClick={() => {setIsActive(content?.name);navigate(`/todo/:${content?.name}`)}}
+              onClick={() => {
+                setIsActive(content?.name);
+                navigate(`/todo/:${content?.name}`);
+              }}
             >
               <SidebarContent
                 contentName={content?.name}
@@ -47,12 +63,18 @@ export const Sidebar = (props) => {
         {list.map((list, listIndex) => {
           return (
             <div
-              className={`${isActive == list?.name ? "active" : ""} contents`}
+              className={`${isActive == list.name ? "active" : ""} contents`}
               key={listIndex}
-              onClick={() => {setIsActive(list?.name);navigate(`/todo/:${list?.name}`)}}
+              onClick={() => {
+                setIsActive(list?.name);
+                navigate(`/todo/:${list?.name}`);
+              }}
             >
               <SidebarContent
                 contentName={list?.name}
+                data={props?.todos?.custom.find(
+                  (item) => item.name == list?.name
+                )}
                 source={listIcon}
                 alt={list?.name}
               />
