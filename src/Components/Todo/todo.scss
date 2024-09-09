@@ -67,7 +67,7 @@
     .input-field {
       display: flex;
       width: 100%;
-      padding: 0.5rem 2rem;
+      padding: 0.5rem 1rem;
       gap: 1.5rem;
       .input-section {
         flex-grow: 1;
@@ -133,7 +133,7 @@
       flex-direction: column;
       justify-content: center;
       align-items: flex-start;
-      .completed-actions{
+      .completed-actions {
         display: flex;
         p {
           padding: 1rem;
@@ -149,6 +149,7 @@
       font-size: 1.2rem;
       display: flex;
       font-weight: 100;
+      overflow: auto;
       justify-content: flex-start;
       align-items: center;
       background-color: #ffffff;
@@ -156,7 +157,7 @@
         height: 3rem;
         width: 3rem;
         display: flex;
-        margin-left:1rem ;
+        margin-left: 1rem;
         padding: 0.2rem 0.5rem;
         align-items: center;
       }
@@ -200,7 +201,7 @@
       .radiobtn {
         height: 3rem;
         width: 3rem;
-        margin-left:1rem ;
+        margin-left: 1rem;
         display: flex;
         padding: 0.2rem 0.5rem;
         align-items: center;
@@ -245,5 +246,4 @@
   font-size: 1rem;
   font-weight: 200;
   color: #4d4c4b;
-
 }

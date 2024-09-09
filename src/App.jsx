@@ -4,6 +4,7 @@ import { Sidebar } from "./Components/Sidebar/Sidebar";
 import { Todo } from "./Components/Todo/Todo";
 import { Routes, Route } from "react-router-dom";
 // import { TodoEditor } from "./Components/TodoEditor/TodoEditor";
+import "./assets/fonts/Roboto-Black.ttf";
 
 import "./App.scss";
 
@@ -66,19 +67,10 @@ function App() {
     ],
   });
 
-  const [incompleteTodos, setIncompleteTodos] = useState([{ title: "hi" }]);
-  const [completedTodos, setCompletedTodos] = useState([{ title: "hi" }]);
   const handleClick = () => {
     setSidebar(!sidebar);
   };
-  const markCompleted = (todoIndex) => {
-    setCompletedTodos([...completedTodos, incompleteTodos[todoIndex]]);
-    incompleteTodos.splice(todoIndex, 1);
-  };
-  const markIncomplete = (todoIndex) => {
-    setIncompleteTodos([...incompleteTodos, completedTodos[todoIndex]]);
-    completedTodos.splice(todoIndex, 1);
-  };
+
 
   return (
     <div className="wrapper">

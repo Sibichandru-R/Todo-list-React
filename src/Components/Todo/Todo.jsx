@@ -3,14 +3,19 @@ import dots from "../../assets/dots-horizontal.svg";
 import toggle from "../../assets/toggle.svg";
 import sort from "../../assets/sort.svg";
 import groupLeft from "../../assets/group-left.svg";
+import star from "../../assets/sidebar-body/star.svg";
 import listIcon from "../../assets/list.svg";
 import expandIcon from "../../assets/expand.svg";
 import rightArrow from "../../assets/right.svg";
+import checkbox from "../../assets/checkbox.svg";
+import checkboxTick from "../../assets/checkbox-tick.svg";
 import { Button } from "../Button/Button";
+import { ToastContainer, toast } from "react-toastify";
 import { layouts, addTodoOptions, defaultList } from "../../constants";
 import { useLocation } from "react-router-dom";
 
 import "./todo.scss";
+import { TodoEditor } from "../TodoEditor/TodoEditor";
 
 export const Todo = (props) => {
   let location = useLocation();
@@ -27,23 +32,45 @@ export const Todo = (props) => {
   const [incompleteTodos, setIncompleteTodos] = useState(
     data?.todos?.incompleteTodos
   );
-  console.log(data);
-  
+
   const [completedTodos, setCompletedTodos] = useState(
     data?.todos?.completedTodos
   );
-  const [menuToggle, setMenuToggle] = useState(false);
+  const [allTodo, setAllTodo] = useState([
+    ...completedTodos,
+    ...incompleteTodos,
+  ]);
+  const [menuToggle, setMenuToggle] = useState(true);
 
   const markCompleted = (todoIndex) => {
     setCompletedTodos([...completedTodos, incompleteTodos[todoIndex]]);
     setIncompleteTodos(incompleteTodos);
     incompleteTodos.splice(todoIndex, 1);
+    notify(true);
   };
   const markIncomplete = (todoIndex) => {
     setIncompleteTodos([...incompleteTodos, completedTodos[todoIndex]]);
     completedTodos.splice(todoIndex, 1);
+    notify(false);
   };
-
+  const notify = (completed) => {
+    completed
+      ? toast("Marked as Completed", {
+          position: "top-right",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+        })
+      : toast("Marked as Incomplete", {
+          position: "top-right",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+  };
   const addTodo = () => {
     setFocus(false);
     setIncompleteTodos([
@@ -71,11 +98,22 @@ export const Todo = (props) => {
   };
   const editMenuToggle = () => {
     setMenuToggle(!menuToggle);
-    console.log(menuToggle);
   };
 
   return (
     <>
+      <ToastContainer
+        position="top-right"
+        autoClose={1000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <div className="todo">
         <div className="todo-header">
           <div className="todo-title">
@@ -146,7 +184,7 @@ export const Todo = (props) => {
         </div>
         <div className="add-todo">
           <div className="input-field">
-            <img src={listIcon} width="30px" alt="" />
+            <img src={checkbox} width="30px" />
             <div className="input-section">
               <input
                 type="text"
@@ -180,7 +218,7 @@ export const Todo = (props) => {
         )}
         <div className="todo-body">
           <div className="todo-list-header">
-            <div className="radiobtn">|||</div>
+            <div className="radiobtn"> </div>
             <div className="task">Title</div>
             <div className="due-time">Due Date</div>
             <div className="important">Importance</div>
@@ -192,13 +230,19 @@ export const Todo = (props) => {
                   className="radiobtn"
                   onClick={() => markCompleted(todoIndex)}
                 >
-                  {todo?.isCompleted}
+                  <Button source={checkbox} alt="check" />
                 </div>
                 <div className="task" onClick={editMenuToggle}>
                   {todo?.title}
                 </div>
                 <div className="due-time">{todo?.due}</div>
-                <div className="important">{todo?.isImportant}</div>
+                <div className="important">
+                  {todo?.isImportant ? (
+                    <Button source={star} alt="star" handleClick={() => null} />
+                  ) : (
+                    <Button source={star} alt="star" handleClick={() => null} />
+                  )}
+                </div>
               </div>
             );
           })}
@@ -222,11 +266,17 @@ export const Todo = (props) => {
                           className="radiobtn"
                           onClick={() => markIncomplete(todoIndex)}
                         >
-                          {todo?.isCompleted}
+                          <Button source={checkboxTick} alt="check" />
                         </div>
                         <div className="task">{todo?.title}</div>
                         <div className="due-time">{todo?.due}</div>
-                        <div className="important">{todo?.isImportant}</div>
+                        <div className="important">
+                          {todo?.isImportant ? (
+                            <Button source={star} />
+                          ) : (
+                            <Button source={star} />
+                          )}
+                        </div>
                       </div>
                     );
                   })}
@@ -240,25 +290,7 @@ export const Todo = (props) => {
           )}
         </div>
       </div>
-      {menuToggle ? (
-        <div className="todo-editor">
-          <div className="add-step">
-            <div className="new-list">
-              {/* <img src={plus} width="30px" className="icon" alt="Add new list" /> */}
-              {/* <input
-      type="text"
-      className="content-name"
-      placeholder="New List"
-      onKeyDown={onEnter}
-      value={listName}
-      onChange={(event) => setListName(event.target.value)}
-    /> */}
-            </div>
-          </div>
-        </div>
-      ) : (
-        <div></div>
-      )}
+      {menuToggle ? <TodoEditor /> : <></>}
     </>
   );
 };

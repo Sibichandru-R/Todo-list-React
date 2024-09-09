@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState,useRef } from "react";
 import { Button } from "../Button/Button";
 import { SidebarContent } from "../SidebarContent/SidebarContent";
 import { sidebarContent, sidebarFooterIcons } from "../../constants";
@@ -11,6 +11,7 @@ import { redirect, replace, useNavigate } from "react-router-dom";
 export const Sidebar = (props) => {
   const navigate = useNavigate();
   const [list, setList] = useState(props?.todos?.custom);
+  const myTodo = useRef('')
   const [listName, setListName] = useState("");
   const [isActive, setIsActive] = useState("My Day");
 
@@ -104,7 +105,7 @@ export const Sidebar = (props) => {
             <div className="icon" key={footerIconIndex}>
               <Button
                 source={icon}
-                alt={"wei"}
+                alt={""}
                 handleClick={() => console.log("clicked")}
               />
             </div>

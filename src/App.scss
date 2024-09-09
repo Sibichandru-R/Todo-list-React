@@ -1,8 +1,15 @@
 $wrapper-color: #faf9f8;
 
+@font-face {
+  font-family: "Roboto";   
+  src: local("RobotoBlack"),
+    url("./assets/fonts/Roboto-Black.ttf") format("truetype");
+}
 .wrapper {
   width: 100vw;
   height: 100vh;
+  font-family: "Roboto";
+  font-weight: 200;
   border-radius: 1rem;
   background-color: $wrapper-color;
   display: flex;
