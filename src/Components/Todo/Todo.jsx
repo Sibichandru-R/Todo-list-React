@@ -10,7 +10,7 @@ import rightArrow from "../../assets/right.svg";
 import checkbox from "../../assets/checkbox.svg";
 import checkboxTick from "../../assets/checkbox-tick.svg";
 import { Button } from "../Button/Button";
-import { ToastContainer, toast } from "react-toastify";
+// import { ToastContainer, toast } from "react-toastify";
 import { layouts, addTodoOptions, defaultList } from "../../constants";
 import { useLocation } from "react-router-dom";
 
@@ -21,56 +21,62 @@ export const Todo = (props) => {
   let location = useLocation();
   location = location.pathname.split(":");
   location = location[location.length - 1].replaceAll("%20", " ");
-  const [name, setName] = useState(location);
-  const data = props?.todos?.custom.find((item) => item.name == name);
+  
+  const [id, setId] = useState(location);
+  useEffect(() => {
+    setId(location);
+  }, [location]);
 
+  const [data, setData] = useState(props?.todos?.custom[id]);
+  useEffect(() => {
+    setList(props?.todos?.custom);
+    setData(props?.todos?.custom[id]);
+  }, [id]);
+  useEffect(() => {
+    setCompletedTodos(data?.todos?.completedTodos);
+    setIncompleteTodos(data?.todos?.incompleteTodos);
+  }, [data]);
   const [activeLayout, setActiveLayout] = useState("grid");
   const [todo, setTodo] = useState("");
   const [focus, setFocus] = useState(false);
-  let list = props?.todos?.custom;
+  const [list,setList] = useState(props?.todos?.custom);
   const [expandCompleted, setExpandCompleted] = useState(false);
-  const [incompleteTodos, setIncompleteTodos] = useState(
-    data?.todos?.incompleteTodos
+  const [incompleteTodos, setIncompleteTodos] = useState([]
+    // data?.todos?.incompleteTodos
   );
 
-  const [completedTodos, setCompletedTodos] = useState(
-    data?.todos?.completedTodos
+  const [completedTodos, setCompletedTodos] = useState([]
   );
-  const [allTodo, setAllTodo] = useState([
-    ...completedTodos,
-    ...incompleteTodos,
-  ]);
-  const [menuToggle, setMenuToggle] = useState(true);
+
+  const [menuToggle, setMenuToggle] = useState(false);
 
   const markCompleted = (todoIndex) => {
     setCompletedTodos([...completedTodos, incompleteTodos[todoIndex]]);
     setIncompleteTodos(incompleteTodos);
     incompleteTodos.splice(todoIndex, 1);
-    notify(true);
   };
   const markIncomplete = (todoIndex) => {
     setIncompleteTodos([...incompleteTodos, completedTodos[todoIndex]]);
     completedTodos.splice(todoIndex, 1);
-    notify(false);
   };
-  const notify = (completed) => {
-    completed
-      ? toast("Marked as Completed", {
-          position: "top-right",
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-        })
-      : toast("Marked as Incomplete", {
-          position: "top-right",
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-        });
-  };
+  // const notify = (completed) => {
+  //   completed
+  //     ? toast("Marked as Completed", {
+  //         position: "top-right",
+  //         autoClose: 1000,
+  //         hideProgressBar: false,
+  //         closeOnClick: true,
+  //         pauseOnHover: true,
+  //       })
+  //     : toast("Marked as Incomplete", {
+  //         position: "top-right",
+  //         autoClose: 1000,
+  //         hideProgressBar: false,
+  //         closeOnClick: true,
+  //         pauseOnHover: true,
+  //         draggable: true,
+  //       });
+  // };
   const addTodo = () => {
     setFocus(false);
     setIncompleteTodos([
@@ -79,11 +85,10 @@ export const Todo = (props) => {
     ]);
     setTodo("");
   };
-  useEffect(() => {
-    const index = props?.todos?.custom?.findIndex((e) => e.name == name);
-    list[index].todos.completedTodos = completedTodos;
-    list[index].todos.incompleteTodos = incompleteTodos;
-    props?.setTodos({ default: props?.todos?.default, custom: list });
+  useEffect(() => {    
+    list[id].todos.completedTodos = completedTodos;
+    list[id].todos.incompleteTodos = incompleteTodos;
+    props?.setTodos({ custom: list });
   }, [incompleteTodos, completedTodos]);
 
   const expand = () => {
@@ -96,13 +101,15 @@ export const Todo = (props) => {
     if (activeLayout == "list") setActiveLayout("grid");
     else setActiveLayout("list");
   };
-  const editMenuToggle = () => {
+  const [editTodo, setEditTodo] = useState();
+  const editMenuToggle = (todo) => {
     setMenuToggle(!menuToggle);
+    setEditTodo(todo);
   };
 
   return (
     <>
-      <ToastContainer
+      {/* <ToastContainer
         position="top-right"
         autoClose={1000}
         hideProgressBar={false}
@@ -113,7 +120,7 @@ export const Todo = (props) => {
         draggable
         pauseOnHover
         theme="light"
-      />
+      /> */}
       <div className="todo">
         <div className="todo-header">
           <div className="todo-title">
@@ -223,30 +230,39 @@ export const Todo = (props) => {
             <div className="due-time">Due Date</div>
             <div className="important">Importance</div>
           </div>
-          {incompleteTodos.map((todo, todoIndex) => {
-            return (
-              <div className="todo-list" key={todoIndex}>
-                <div
-                  className="radiobtn"
-                  onClick={() => markCompleted(todoIndex)}
-                >
-                  <Button source={checkbox} alt="check" />
+          {incompleteTodos &&
+            incompleteTodos.map((todo, todoIndex) => {
+              return (
+                <div className="todo-list" key={todoIndex}>
+                  <div
+                    className="radiobtn"
+                    onClick={() => markCompleted(todoIndex)}
+                  >
+                    <Button source={checkbox} alt="check" />
+                  </div>
+                  <div className="task" onClick={() => editMenuToggle(todo)}>
+                    {todo?.title}
+                  </div>
+                  <div className="due-time">{todo?.due}</div>
+                  <div className="important">
+                    {todo?.isImportant ? (
+                      <Button
+                        source={star}
+                        alt="star"
+                        handleClick={() => null}
+                      />
+                    ) : (
+                      <Button
+                        source={star}
+                        alt="star"
+                        handleClick={() => null}
+                      />
+                    )}
+                  </div>
                 </div>
-                <div className="task" onClick={editMenuToggle}>
-                  {todo?.title}
-                </div>
-                <div className="due-time">{todo?.due}</div>
-                <div className="important">
-                  {todo?.isImportant ? (
-                    <Button source={star} alt="star" handleClick={() => null} />
-                  ) : (
-                    <Button source={star} alt="star" handleClick={() => null} />
-                  )}
-                </div>
-              </div>
-            );
-          })}
-          {completedTodos.length > 0 ? (
+              );
+            })}
+          {completedTodos && completedTodos.length > 0 ? (
             <div className="completed">
               <div className="completed-actions">
                 <Button
@@ -268,7 +284,12 @@ export const Todo = (props) => {
                         >
                           <Button source={checkboxTick} alt="check" />
                         </div>
-                        <div className="task">{todo?.title}</div>
+                        <div
+                          className="task"
+                          onClick={() => editMenuToggle(todo)}
+                        >
+                          {todo?.title}
+                        </div>{" "}
                         <div className="due-time">{todo?.due}</div>
                         <div className="important">
                           {todo?.isImportant ? (

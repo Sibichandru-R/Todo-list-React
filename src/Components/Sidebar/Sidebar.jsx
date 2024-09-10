@@ -1,4 +1,4 @@
-import { useEffect, useState,useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Button } from "../Button/Button";
 import { SidebarContent } from "../SidebarContent/SidebarContent";
 import { sidebarContent, sidebarFooterIcons } from "../../constants";
@@ -7,11 +7,10 @@ import listIcon from "../../assets/list.svg";
 import plus from "../../assets/plus.svg";
 import left from "../../assets/group-left.svg";
 import "./sidebar.scss";
-import { redirect, replace, useNavigate } from "react-router-dom";
+import { Navigate, redirect, replace, useNavigate } from "react-router-dom";
 export const Sidebar = (props) => {
   const navigate = useNavigate();
   const [list, setList] = useState(props?.todos?.custom);
-  const myTodo = useRef('')
   const [listName, setListName] = useState("");
   const [isActive, setIsActive] = useState("My Day");
 
@@ -26,12 +25,17 @@ export const Sidebar = (props) => {
               incompleteTodos: [],
             },
           },
-        ]) & setListName("")
+        ]) &
+        navigate(`todo/:${list.length}`) &
+        setIsActive(listName) &
+        setListName("")
       : null;
   };
   useEffect(() => {
-    props?.setTodos({ default: props?.todos?.default, custom: list });
+    props?.setTodos({ custom: list });
+    
   }, [list]);
+
   return props.sidebar ? (
     <div className="sidebar-open">
       <div className="sidebar-header">
@@ -49,11 +53,14 @@ export const Sidebar = (props) => {
               key={contentIndex}
               onClick={() => {
                 setIsActive(content?.name);
-                navigate(`/todo/:${content?.name}`);
+                navigate(`todo/:${contentIndex}`);
               }}
             >
               <SidebarContent
                 contentName={content?.name}
+                data={props?.todos?.custom.find(
+                  (item) => item.name == list?.name
+                )}
                 source={content?.icon}
                 alt={content?.name}
               />
@@ -63,22 +70,29 @@ export const Sidebar = (props) => {
         <div className="splitter"></div>
         {list.map((list, listIndex) => {
           return (
-            <div
-              className={`${isActive == list.name ? "active" : ""} contents`}
-              key={listIndex}
-              onClick={() => {
-                setIsActive(list?.name);
-                navigate(`/todo/:${list?.name}`);
-              }}
-            >
-              <SidebarContent
-                contentName={list?.name}
-                data={props?.todos?.custom.find(
-                  (item) => item.name == list?.name
-                )}
-                source={listIcon}
-                alt={list?.name}
-              />
+            <div key={listIndex}>
+              {listIndex > 4 ? (
+                <div
+                  className={`${
+                    isActive == list.name ? "active" : ""
+                  } contents`}
+                  onClick={() => {
+                    setIsActive(list?.name);
+                    navigate(`todo/:${listIndex}`);
+                  }}
+                >
+                  <SidebarContent
+                    contentName={list?.name}
+                    data={props?.todos?.custom.find(
+                      (item) => item.name == list?.name
+                    )}
+                    source={listIcon}
+                    alt={list?.name}
+                  />
+                </div>
+              ) : (
+                <></>
+              )}
             </div>
           );
         })}

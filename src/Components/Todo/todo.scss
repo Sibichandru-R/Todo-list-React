@@ -104,15 +104,19 @@
     }
     .add-todo-button {
       background-color: transparent;
-      width: 4rem;
-      padding-left: 80%;
+      display: flex;
+      justify-content: flex-end;
+      flex-grow: 1;
       button {
-        width: 100%;
+        width: 4rem;
         height: 100%;
         font-size: 1.2rem;
         color: #2564cf;
-        background-color: trffffffansparent;
+        background-color: transparent;
         border: 0;
+      }
+      button:hover{
+        background-color: #ffffff;
       }
     }
   }

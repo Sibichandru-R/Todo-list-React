@@ -12,7 +12,7 @@ function App() {
   const [sidebar, setSidebar] = useState(true);
   const [menuToggle, setMenuToggle] = useState(false);
   const [todos, setTodos] = useState({
-    default: [
+    custom: [
       {
         name: "My Day",
         todos: {
@@ -48,22 +48,14 @@ function App() {
           incompleteTodos: [],
         },
       },
-    ],
-    custom: [
       {
-        name: "idOne",
+        name: "One",
         todos: {
-          completedTodos: [{ title: "task1", isImportant: false, due: "" }],
-          incompleteTodos: [{ title: "task2", isImportant: false, due: "" }],
+          completedTodos: [],
+          incompleteTodos: [],
         },
       },
-      {
-        name: "idTwo",
-        todos: {
-          completedTodos: [{ title: "id2task1", isImportant: false, due: "" }],
-          incompleteTodos: [{ title: "id2task2", isImportant: false, due: "" }],
-        },
-      },
+
     ],
   });
 
@@ -83,6 +75,7 @@ function App() {
           sidebar={sidebar}
         />
         <Routes>
+
           <Route
             path="/todo"
             element={
@@ -96,7 +89,7 @@ function App() {
             }
           />
           <Route
-            path="/todo/:id"
+            path="todo/:id"
             element={
               <Todo
                 todos={todos}

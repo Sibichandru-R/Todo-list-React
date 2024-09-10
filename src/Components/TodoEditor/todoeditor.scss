@@ -1,20 +1,20 @@
 .todo-editor {
   height: 97%;
   width: 50rem;
-  margin: 1rem;
-  padding: 2rem 0.1rem 0.5rem;
+  padding: 2rem 1rem 0.5rem;
   background-color: #faf9f8;
   display: flex;
   flex-direction: column;
   font-size: 1.2rem;
   font-weight: 200;
   color: #4d4c4b;
-  overflow: auto;
+  // overflow: scroll;
+  box-shadow: -10px 0px 10px 0px #aaaaaa;
   .header {
     padding: 0.25rem 2.2rem;
     display: flex;
     justify-content: flex-start;
-    position: sticky;
+    // position: fixed;
     height: 4rem;
     background-color: #ffffff;
 
@@ -37,107 +37,131 @@
       text-decoration: line-through;
     }
   }
-  .subtasks {
-    padding: 0.25rem 2.2rem;
-    display: flex;
-    justify-content: flex-start;
-    background-color: #ffffff;
-
-    button {
-      width: 3rem;
-      display: flex;
-      align-items: center;
-      height: 100%;
-      padding: 0.15rem 0.3rem;
-      justify-content: center;
+  .subtask-body {
+    height: 47rem;
+    overflow-y: auto;
+    .subtasks:hover {
+      background-color: #faf9f8;
     }
-    .subtask-name {
-      align-items: center;
-      padding: 0.25rem 0 0.25rem 2.2rem;
+    .subtasks {
+      padding: 1.25rem 2.2rem;
       display: flex;
-      flex-grow: 1;
       justify-content: flex-start;
-    }
-    .completed {
-      text-decoration: line-through;
-    }
-  }
-  .new-list:hover {
-    background-color: #faf9f8;
-  }
-  .new-list {
-    padding: 0.25rem 0 0.25rem 2.2rem;
-    background-color: #ffffff;
-    display: flex;
-    justify-content: flex-start;
-    .icon {
-      height: 100%;
-      padding: 0.15rem 0.3rem;
-      display: flex;
-      justify-content: center;
-    }
-    input {
-      // width: 100%;
-      border: 0;
-      background-color: transparent;
-      font-size: 1.2rem;
-      padding: 1rem 0 1rem 1.9rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #2564cf;
-    }
-    input:focus {
-      outline: 0;
-    }
-    .icon,
-    .content-name {
-      display: flex;
-      align-items: center;
-    }
-  }
-  .options {
-    padding: 1rem 2.2rem;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    font-size: 1.2rem;
-    background-color: #ffffff;
-
-    .icon {
-      width: 3rem;
-      height: 100%;
-      padding: 0.15rem 0.3rem;
-    }
-    .content-name {
-      width: 65%;
-      padding: 1rem 0 1rem 1rem;
-    }
-    .icon,
-    .content-name {
-      display: flex;
-      align-items: center;
-    }
-  }
-  .seperator {
-    margin: 1rem 0;
-  }
-  .new-note {
-    padding: 1.25rem 0 1.25rem 2.2rem;
-    background-color: #ffffff;
-    display: flex;
-    justify-content: flex-start;
-    height: 4rem;
-    .note {
-    }
-    input {
-      padding: 1.5rem 0 1.5rem 0.7rem;
-      border: 0;
-      font-size: 1.2rem;
-    }
-    input:focus {
       background-color: #ffffff;
-      outline: 0;
+
+      button {
+        width: 3rem;
+        display: flex;
+        align-items: center;
+        height: 100%;
+        padding: 0.15rem 0.3rem;
+        justify-content: center;
+      }
+      .subtask-name {
+        align-items: center;
+        padding: 0.25rem 0 0.25rem 2.2rem;
+        display: flex;
+        flex-grow: 1;
+        justify-content: flex-start;
+      }
+      .completed {
+        text-decoration: line-through;
+      }
+    }
+
+    .new-list {
+      padding: 0.25rem 0 0.25rem 2.2rem;
+      background-color: #ffffff;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      .icon {
+        height: 100%;
+        padding: 0.15rem 0.3rem;
+        display: flex;
+        justify-content: center;
+      }
+      input {
+        // width: 100%;
+        border: 0;
+        background-color: transparent;
+        font-size: 1.2rem;
+        padding: 1rem 0 1rem 1.9rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #2564cf;
+      }
+      input:focus {
+        outline: 0;
+      }
+      .icon,
+      .content-name {
+        display: flex;
+        align-items: center;
+      }
+    }
+    .options {
+      padding: 1rem 2.2rem;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      font-size: 1.2rem;
+      background-color: #ffffff;
+
+      .icon {
+        width: 3rem;
+        height: 100%;
+        padding: 0.15rem 0.3rem;
+      }
+      .content-name {
+        width: 65%;
+        padding: 1rem 0 1rem 1rem;
+      }
+      .icon,
+      .content-name {
+        display: flex;
+        align-items: center;
+      }
+    }
+    .options:hover {
+      background-color: #ebebeb;
+    }
+    .seperator {
+      margin: 1rem 0;
+    }
+    .new-note {
+      padding: 1.25rem 0 1.25rem 2.2rem;
+      background-color: #ffffff;
+      display: flex;
+      justify-content: flex-start;
+      height: 4rem;
+      input {
+        padding: 1.5rem 0 1.5rem 0.7rem;
+        border: 0;
+        font-size: 1.2rem;
+      }
+      input:focus {
+        background-color: #ffffff;
+        outline: 0;
+      }
+    }
+  }
+  .sidebar-footer {
+    display: flex;
+    align-items: flex-end;
+    padding: auto 1.5rem;
+    .icon {
+      border: 0;
+      height: 4rem;
+      background-color: transparent;
+      display: flex;
+    }
+    .icon:hover {
+      background-color: #faf9f8;
+    }
+    .end {
+      margin-left: 20rem;
     }
   }
 }
