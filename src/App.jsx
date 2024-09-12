@@ -3,12 +3,14 @@ import { Navbar } from "./Components/Navbar/Navbar";
 import { Sidebar } from "./Components/Sidebar/Sidebar";
 import { Todo } from "./Components/Todo/Todo";
 import { Routes, Route } from "react-router-dom";
-// import { TodoEditor } from "./Components/TodoEditor/TodoEditor";
 import "./assets/fonts/Roboto-Black.ttf";
+import { addTodoList } from "./store/todoSlice.js";
 
 import "./App.scss";
+import { useSelector, useDispatch } from "react-redux";
 
 function App() {
+  const dispatch = useDispatch();
   const [sidebar, setSidebar] = useState(true);
   const [menuToggle, setMenuToggle] = useState(false);
   const [todos, setTodos] = useState({
@@ -55,14 +57,12 @@ function App() {
           incompleteTodos: [],
         },
       },
-
     ],
   });
 
   const handleClick = () => {
     setSidebar(!sidebar);
   };
-
 
   return (
     <div className="wrapper">
@@ -75,7 +75,6 @@ function App() {
           sidebar={sidebar}
         />
         <Routes>
-
           <Route
             path="/todo"
             element={

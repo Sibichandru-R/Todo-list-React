@@ -1,16 +1,16 @@
-import mail from "./assets/sidebar-footer/mail.svg";
-import calender from "./assets/sidebar-footer/calender.svg";
-import people from "./assets/sidebar-footer/people.svg";
-import link from "./assets/sidebar-footer/link.svg";
-import tick from "./assets/sidebar-footer/tick.svg";
-import list from "./assets/list.svg";
-import grid from "./assets/grid.svg";
-import star from "./assets/sidebar-body/star.svg";
-import home from "./assets/sidebar-body/home.svg";
-import sun from "./assets/sidebar-body/sun.svg";
-import user from "./assets/sidebar-body/user.svg";
-import repeat from "./assets/repeat.svg";
-import remainder from "./assets/remainder.svg";
+import mail from "./assets/images/sidebar-footer/mail.svg";
+import calender from "./assets/images/sidebar-footer/calender.svg";
+import people from "./assets/images/sidebar-footer/people.svg";
+import link from "./assets/images/sidebar-footer/link.svg";
+import tick from "./assets/images/sidebar-footer/tick.svg";
+import list from "./assets/images/list.svg";
+import grid from "./assets/images/grid.svg";
+import star from "./assets/images/sidebar-body/star.svg";
+import home from "./assets/images/sidebar-body/home.svg";
+import sun from "./assets/images/sidebar-body/sun.svg";
+import user from "./assets/images/sidebar-body/user.svg";
+import repeat from "./assets/images/repeat.svg";
+import remainder from "./assets/images/remainder.svg";
 
 export const sidebarContent = [
   { name: "My Day", icon: sun },

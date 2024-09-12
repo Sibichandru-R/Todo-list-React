@@ -1,10 +1,10 @@
 import { Button } from '../Button/Button';
-import moreAppsIcon from '../../assets/more-apps.svg';
-import userProfileIcon from '../../assets/user-profile.svg';
-import searchIcon from '../../assets/search.svg';
-import help from '../../assets/navbar/help.svg'
-import notification from '../../assets/navbar/notification.svg'
-import settings from '../../assets/navbar/settings.svg'
+import moreAppsIcon from '../../assets/images/more-apps.svg';
+import userProfileIcon from '../../assets/images/user-profile.svg';
+import searchIcon from '../../assets/images/search.svg';
+import help from '../../assets/images/navbar/help.svg'
+import notification from '../../assets/images/navbar/notification.svg'
+import settings from '../../assets/images/navbar/settings.svg'
 import './navbar.scss';
 export const Navbar = () => {
   return (

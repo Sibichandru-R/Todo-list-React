@@ -1,32 +1,80 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "../Button/Button";
-import starFilled from "../../assets/star-filled.svg";
-import plus from "../../assets/plus.svg";
-import star from "../../assets/sidebar-body/star.svg";
+import starFilled from "../../assets/images/star-filled.svg";
+import plus from "../../assets/images/plus.svg";
+import star from "../../assets/images/sidebar-body/star.svg";
 import { addTodoOptions } from "../../constants";
-import sun from "../../assets/sidebar-body/sun.svg";
-import checkbox from "../../assets/checkbox.svg";
-import groupLeft from "../../assets/group-left.svg";
-import checkboxTick from "../../assets/checkbox-tick.svg";
-import deleteIcon from "../../assets/delete-icon.svg";
-
+import sun from "../../assets/images/sidebar-body/sun.svg";
+import checkbox from "../../assets/images/checkbox.svg";
+import groupLeft from "../../assets/images/group-left.svg";
+import checkboxTick from "../../assets/images/checkbox-tick.svg";
+import deleteIcon from "../../assets/images/delete-icon.svg";
+import { useSelector, useDispatch } from "react-redux";
+import { addNewSubtask, deleteTodo } from "../../store/todoSlice";
 import "./todoeditor.scss";
 
 export const TodoEditor = (props) => {
-  const [subtasks, setSubtasks] = useState([
-    { name: "task", isCompleted: false, isImportant: false },
-  ]);
+  const [todoEdit, setTodoEdit] = useState(
+    useSelector(
+      (state) =>
+        state.todoListSection[props?.editId?.sectionId].todos[props?.editId?.id]
+    )
+  );
+
+  console.log(todoEdit);
+  console.log(props?.editId?.id);
+  
+
+  const [subtasks, setSubtasks] = useState(
+    todoEdit.subtasks ? todoEdit.subtasks : []
+  );
   const [subtaskName, setSubtaskName] = useState("");
+  let index = useSelector((state) =>
+    state.todoListSection[props?.editId?.sectionId].todos.findIndex(
+      (todo) => todo.id == props?.editId?.id
+    )
+  );
+  // console.log(index);
+  let currentState = useSelector(
+    (state) =>
+      state.todoListSection[props?.editId?.sectionId].todos[props?.editId?.id]
+  );
+  useEffect(() => {
+    setTodoEdit(currentState);
+    setSubtasks(currentState.subtasks);
+  }, [props?.editId?.id, currentState]);
+  const dispatch = useDispatch();
   const onEnter = (event) => {
     event.key == "Enter"
       ? setSubtasks([
           ...subtasks,
-          { name: subtaskName, isCompleted: false, isImportant: true },
-        ]) & setSubtaskName("")
+          {
+            todoId: props?.editId?.id,
+            sectionId: props.editId?.sectionId,
+            id: subtasks.length,
+            subtaskTitle: subtaskName,
+            isCompleted: false,
+            isImportant: false,
+          },
+        ]) &
+        dispatch(
+          addNewSubtask({
+            todoId: props?.editId?.id,
+            sectionId: props.editId?.sectionId,
+            id: subtasks.length,
+            subtaskTitle: subtaskName,
+            isCompleted: false,
+            isImportant: false,
+          })
+        ) &
+        setSubtaskName("")
       : null;
   };
   const toggleComplete = (subtask) => {
     console.log(subtask);
+  };
+  const onDelete = (_id, index) => {
+    dispatch(deleteTodo({ _id, index }));
   };
 
   return (
@@ -34,30 +82,27 @@ export const TodoEditor = (props) => {
       <div className="header">
         <Button source={checkboxTick} alt="alter" />
         <div
-          className={`${
-            props?.todos?.isCompleted ? "completed" : ""
-          } subtask-name`}
+          className={`${todoEdit.isCompleted ? "completed" : ""} subtask-name`}
         >
-          {props.name || "Task Name"}
+          {todoEdit.title}
         </div>
         <Button source={star} alt="alter" />
       </div>
       <div className="subtask-body">
-        {subtasks.map((subtask, subtaskIndex) => {
+        {subtasks.map((subtask, index) => {
           return (
-            <div key={subtaskIndex} className="subtasks">
+            <div key={index} className="subtasks">
               <Button
-                key={subtaskIndex}
                 source={checkbox}
+                handleClick={() => toggleComplete(subtask)}
                 alt="alter"
-                handleClick={(subtaskIndex) => toggleComplete(subtaskIndex)}
               />
               <div
                 className={`${
                   subtask.isCompleted ? "completed" : ""
                 } subtask-name`}
               >
-                {subtask.name}
+                {subtask.subtaskTitle}
               </div>
               {subtask.isImportant ? (
                 <Button
@@ -116,14 +161,16 @@ export const TodoEditor = (props) => {
           <Button
             source={groupLeft}
             alt={""}
-            handleClick={() => console.log("clicked")}
+            handleClick={() => props.menuToggle(false)}
           />
         </div>
         <div className="icon end">
           <Button
             source={deleteIcon}
             alt={""}
-            handleClick={() => console.log("clicked")}
+            handleClick={() =>
+              props.menuToggle(false) & onDelete(props?.editId, index)
+            }
           />
         </div>
       </div>

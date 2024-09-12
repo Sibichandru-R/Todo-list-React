@@ -1,29 +1,32 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "../Button/Button";
 import { SidebarContent } from "../SidebarContent/SidebarContent";
 import { sidebarContent, sidebarFooterIcons } from "../../constants";
-import toggle from "../../assets/toggle.svg";
-import listIcon from "../../assets/list.svg";
-import plus from "../../assets/plus.svg";
-import left from "../../assets/group-left.svg";
+import toggle from "../../assets/images/toggle.svg";
+import listIcon from "../../assets/images/list.svg";
+import plus from "../../assets/images/plus.svg";
+import left from "../../assets/images/group-left.svg";
 import "./sidebar.scss";
-import { Navigate, redirect, replace, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useSelector,useDispatch } from "react-redux";
+import { addTodoList } from "../../store/todoSlice";
 export const Sidebar = (props) => {
   const navigate = useNavigate();
-  const [list, setList] = useState(props?.todos?.custom);
+  const dispatch = useDispatch();
+  const data = useSelector(state=>state.todoListSection)
+  
+  const [list, setList] = useState(data);
   const [listName, setListName] = useState("");
   const [isActive, setIsActive] = useState("My Day");
 
   const onEnter = (event) => {
     event.key == "Enter"
-      ? setList([
+      ? dispatch(addTodoList(listName)) &
+        setList([
           ...list,
           {
             name: listName,
-            todos: {
-              completedTodos: [],
-              incompleteTodos: [],
-            },
+            todos: [],
           },
         ]) &
         navigate(`todo/:${list.length}`) &
@@ -31,10 +34,6 @@ export const Sidebar = (props) => {
         setListName("")
       : null;
   };
-  useEffect(() => {
-    props?.setTodos({ custom: list });
-    
-  }, [list]);
 
   return props.sidebar ? (
     <div className="sidebar-open">
@@ -44,26 +43,29 @@ export const Sidebar = (props) => {
         </div>
       </div>
       <div className="sidebar-body">
-        {sidebarContent.map((content, contentIndex) => {
+        {list.map((list, listIndex) => {
           return (
-            <div
-              className={`${
-                isActive == content?.name ? "active" : ""
-              } contents`}
-              key={contentIndex}
-              onClick={() => {
-                setIsActive(content?.name);
-                navigate(`todo/:${contentIndex}`);
-              }}
-            >
-              <SidebarContent
-                contentName={content?.name}
-                data={props?.todos?.custom.find(
-                  (item) => item.name == list?.name
-                )}
-                source={content?.icon}
-                alt={content?.name}
-              />
+            <div key={listIndex}>
+              {listIndex <= 4 ? (
+                <div
+                  className={`${
+                    isActive == list.name ? "active" : ""
+                  } contents`}
+                  onClick={() => {
+                    setIsActive(list?.name);
+                    navigate(`todo/:${listIndex}`);
+                  }}
+                >
+                  <SidebarContent
+                    contentName={list?.name}
+                    listId={listIndex}
+                    source={sidebarContent[listIndex].icon}
+                    alt={list?.name}
+                  />
+                </div>
+              ) : (
+                <></>
+              )}
             </div>
           );
         })}
@@ -83,9 +85,7 @@ export const Sidebar = (props) => {
                 >
                   <SidebarContent
                     contentName={list?.name}
-                    data={props?.todos?.custom.find(
-                      (item) => item.name == list?.name
-                    )}
+                    listId={listIndex}
                     source={listIcon}
                     alt={list?.name}
                   />
