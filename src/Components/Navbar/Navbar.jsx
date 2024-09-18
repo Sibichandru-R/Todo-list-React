@@ -10,7 +10,7 @@ export const Navbar = () => {
   return (
     <div className='navbar'>
       <div className='more-apps'>
-        <button >
+        <button onClick={()=>window.localStorage.clear()}>
           <img src={moreAppsIcon} width='30px' alt='moreApps' />
         </button>
       </div>

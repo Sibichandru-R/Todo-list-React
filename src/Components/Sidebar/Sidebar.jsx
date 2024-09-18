@@ -1,24 +1,65 @@
-import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { Component, useState } from "react";
+
 import { Button } from "../Button/Button";
 import { SidebarContent } from "../SidebarContent/SidebarContent";
-import { sidebarContent, sidebarFooterIcons } from "../../constants";
+
 import toggle from "../../assets/images/toggle.svg";
 import listIcon from "../../assets/images/list.svg";
 import plus from "../../assets/images/plus.svg";
 import left from "../../assets/images/group-left.svg";
-import "./sidebar.scss";
-import { useNavigate } from "react-router-dom";
-import { useSelector,useDispatch } from "react-redux";
+
+import { sidebarContent, sidebarFooterIcons } from "../../constants";
 import { addTodoList } from "../../store/todoSlice";
+
+import "./sidebar.scss";
+
+/**
+ *
+ * @param {{handleClick:Event,
+ * sidebar:boolean}} props
+ * @returns {Component}
+ */
 export const Sidebar = (props) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const data = useSelector(state=>state.todoListSection)
-  
+  /**
+   * @name data
+   * @description current state of the global state 
+   *
+   * @type {{
+   * name: string,
+   * todos:[
+   * {id: number
+   * ,sectionId: string
+   * ,title: string
+   * ,isCompleted: boolean
+   * ,isImportant: boolean
+   * ,due: date,
+   *  subtasks: [{id: number
+   * ,sectionId: string
+   * ,todoId: number
+   * ,subtaskTitle: string,
+   * isCompleted: boolean
+   * }]
+   * }]}
+   * }
+   */
+  const data = useSelector((state) => state.todoListSection);
+
   const [list, setList] = useState(data);
+
   const [listName, setListName] = useState("");
   const [isActive, setIsActive] = useState("My Day");
 
+  /**
+   * @name
+   * @description dispatch a action to add an new todo list and redirect to that page
+   *
+   * @param {Event} event
+   * @author
+   */
   const onEnter = (event) => {
     event.key == "Enter"
       ? dispatch(addTodoList(listName)) &
@@ -119,7 +160,7 @@ export const Sidebar = (props) => {
             <div className="icon" key={footerIconIndex}>
               <Button
                 source={icon}
-                alt={""}
+                alt=''
                 handleClick={() => console.log("clicked")}
               />
             </div>

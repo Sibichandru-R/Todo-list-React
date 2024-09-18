@@ -28,15 +28,7 @@ export const layouts = [
 ];
 
 export const addTodoOptions = [
-  { name: "calender", icon: calender },
-  { name: "remind me", icon: remainder },
-  { name: "repeat", icon: repeat },
-];
-
-export const defaultList = [
-  "My Day",
-  "Important",
-  "Planned",
-  "Assigned to me",
-  "Tasks",
+  { name: "Remind me", icon: remainder },
+  { name: "Add Due Date", icon: calender },
+  { name: "Repeat", icon: repeat },
 ];

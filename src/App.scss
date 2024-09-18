@@ -1,5 +1,4 @@
-$wrapper-color: #faf9f8;
-
+@use './theme';
 @font-face {
   font-family: "Roboto";   
   src: local("RobotoBlack"),
@@ -11,7 +10,7 @@ $wrapper-color: #faf9f8;
   // font-family: "Roboto";
   font-weight: 200;
   border-radius: 1rem;
-  background-color: $wrapper-color;
+  background-color: theme.$wrapper-color;
   display: flex;
   flex-direction: column;
   overflow: hidden;

@@ -1,25 +1,39 @@
+import { useLocation } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
+import DatePicker from "react-datepicker";
+
 import dots from "../../assets/images/dots-horizontal.svg";
 import toggle from "../../assets/images/toggle.svg";
 import sort from "../../assets/images/sort.svg";
 import groupLeft from "../../assets/images/group-left.svg";
 import star from "../../assets/images/sidebar-body/star.svg";
+import starFilled from "../../assets/images/star-filled.svg";
 import listIcon from "../../assets/images/list.svg";
 import expandIcon from "../../assets/images/expand.svg";
 import rightArrow from "../../assets/images/right.svg";
 import checkbox from "../../assets/images/checkbox.svg";
 import checkboxTick from "../../assets/images/checkbox-tick.svg";
-import { Button } from "../Button/Button";
-import { layouts, addTodoOptions, defaultList } from "../../constants";
-import { useLocation } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-import { addNewTodo, toggleIscompleted } from "../../store/todoSlice";
-import "./todo.scss";
-import { TodoEditor } from "../TodoEditor/TodoEditor";
 
+import { Button } from "../Button/Button";
+import { TodoEditor } from "../TodoEditor/TodoEditor";
+import { layouts, addTodoOptions } from "../../constants";
+import {
+  addNewTodo,
+  toggleIscompleted,
+  toggleIsImportant,
+} from "../../store/todoSlice";
+
+import "./todo.scss";
+
+/**
+ * @name Todo
+ * @param {{handleClick:Function,sidebar:boolean,menuToggle:boolean}} props
+ */
 export const Todo = (props) => {
   const dispatch = useDispatch();
   let location = useLocation();
+
   location = location.pathname.split(":");
   location = location[location.length - 1].replaceAll("%20", " ");
 
@@ -27,16 +41,39 @@ export const Todo = (props) => {
   useEffect(() => {
     setId(location);
   }, [location]);
-  const [currentTodoListState, setCurrentTodoListState] = useState(
-    useSelector((state) => state.todoListSection)
-  );
-  const [menuToggle, setMenuToggle] = useState(false);
-
+  /**
+   * @name check
+   * @type {[{
+   * name: string,
+   * todos:[
+   * {id: number
+   * ,sectionId: string
+   * ,title: string
+   * ,isCompleted: boolean
+   * ,isImportant: boolean
+   * ,due: date,
+   *  subtasks: [{id: number
+   * ,sectionId: string
+   * ,todoId: number
+   * ,subtaskTitle: string,
+   * isCompleted: boolean
+   * }]
+   * }]}]
+   * }
+   */
   const check = useSelector((state) => state.todoListSection);
+
+  const [dueDate, setDueDate] = useState("");
+  const [currentTodoListState, setCurrentTodoListState] = useState(check);
+  const [menuToggle, setMenuToggle] = useState(false);
+  const [activeLayout, setActiveLayout] = useState("grid");
+  const [todo, setTodo] = useState("");
+  const [focus, setFocus] = useState(false);
+  const [expandCompleted, setExpandCompleted] = useState(false);
+
   useEffect(() => {
     setCurrentTodoListState(check);
   }, [id, check, menuToggle]);
-
   const [data, setData] = useState(currentTodoListState[id]);
   useEffect(() => {
     setMenuToggle(false);
@@ -52,10 +89,6 @@ export const Todo = (props) => {
     );
     setAllTodos(data?.todos.length);
   }, [data, currentTodoListState]);
-  const [activeLayout, setActiveLayout] = useState("grid");
-  const [todo, setTodo] = useState("");
-  const [focus, setFocus] = useState(false);
-  const [expandCompleted, setExpandCompleted] = useState(false);
 
   const [incompleteTodos, setIncompleteTodos] = useState(
     data?.todos?.filter((todo) => todo.isCompleted == false)
@@ -66,19 +99,35 @@ export const Todo = (props) => {
   );
   !completedTodos ? setCompletedTodos([]) : null;
   const [allTodos, setAllTodos] = useState(data?.todos.length);
-
+  /**
+   * @name markCompleted
+   * @param {number} todoIndex
+   * @description mark the todo complete and dispatch an action to change the global state
+   */
   const markCompleted = (todoIndex) => {
-    setCompletedTodos([...completedTodos, incompleteTodos[todoIndex]]);
-    setIncompleteTodos(incompleteTodos);
-    dispatch(toggleIscompleted(incompleteTodos[todoIndex]));
-    incompleteTodos.splice(todoIndex, 1);
+    try {
+      setCompletedTodos([...completedTodos, incompleteTodos[todoIndex]]);
+      setIncompleteTodos(incompleteTodos);
+      dispatch(toggleIscompleted(incompleteTodos[todoIndex]));
+      incompleteTodos.splice(todoIndex, 1);
+    } catch (error) {
+      throw error;
+    }
   };
+  /**
+   * @name markIncomplete
+   * @param {number} todoIndex
+   * @description mark the todo incomplete and dispatch an action to change the global state
+   */
   const markIncomplete = (todoIndex) => {
     setIncompleteTodos([...incompleteTodos, completedTodos[todoIndex]]);
     dispatch(toggleIscompleted(completedTodos[todoIndex]));
     completedTodos.splice(todoIndex, 1);
   };
-
+  /**
+   * @name addTodo
+   * @description dispatch an action if todo field is not empty and add todo to the list
+   */
   const addTodo = () => {
     todo
       ? setFocus(false) &
@@ -93,6 +142,7 @@ export const Todo = (props) => {
             isImportant: false,
             isCompleted: false,
             subtasks: [],
+            note: "",
           },
         ]) &
         dispatch(
@@ -104,26 +154,44 @@ export const Todo = (props) => {
             isImportant: false,
             isCompleted: false,
             subtasks: [],
+            note: "",
           })
         ) &
         setTodo("")
       : null;
   };
   useEffect(() => {}, [incompleteTodos, completedTodos]);
+  /**
+   * @name expand
+   * @description expander function to expand and contract the completed todo section
+   */
   const expand = () => {
     setExpandCompleted(!expandCompleted);
   };
+  /**
+   * @name handleEnter
+   * @param {Event} event
+   * @description handles the keypress event for enter to add a new todo by calling addTodo function
+   */
   const handleEnter = (event) => {
     event.key == "Enter" ? addTodo() : null;
   };
+  /**
+   * @name changeActiveLayout
+   * @description handles the layout of the Todo between list and grid
+   */
   const changeActiveLayout = () => {
     if (activeLayout == "list") setActiveLayout("grid");
     else setActiveLayout("list");
   };
   const [editId, setEditId] = useState({ id: 0, sectionId: 0 });
+  /**
+   * @name editMenuToggle
+   * @param {number} id
+   * @param {string} sectionId
+   * @description handles the todo editor opening
+   */
   const editMenuToggle = (id, sectionId) => {
-    console.log(id);
-
     !menuToggle
       ? setMenuToggle(true) & setEditId({ id, sectionId })
       : setMenuToggle(true) & setEditId({ id, sectionId });
@@ -233,98 +301,184 @@ export const Todo = (props) => {
         ) : (
           <></>
         )}
-        <div className="todo-body">
-          <div className="todo-list-header">
-            <div className="radiobtn"> </div>
-            <div className="task">Title</div>
-            <div className="due-time">Due Date</div>
-            <div className="important">Importance</div>
-          </div>
-          {incompleteTodos &&
-            incompleteTodos.map((todo, todoIndex) => {
-              return (
-                <div className="todo-list" key={todoIndex}>
-                  <div
-                    className="radiobtn"
-                    onClick={() => markCompleted(todoIndex)}
-                  >
-                    <Button source={checkbox} alt="check" />
-                  </div>
-                  <div
-                    className="task"
-                    onClick={() => editMenuToggle(todo.id, todo.sectionId)}
-                  >
-                    {todo?.title}
-                  </div>
-                  <div className="due-time">{todo?.due}</div>
-                  <div className="important">
-                    {todo?.isImportant ? (
-                      <Button
-                        source={star}
-                        alt="star"
-                        handleClick={() => null}
-                      />
-                    ) : (
-                      <Button
-                        source={star}
-                        alt="star"
-                        handleClick={() => null}
-                      />
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          {completedTodos && completedTodos.length > 0 ? (
-            <div className="completed">
-              <div className="completed-actions">
-                <Button
-                  source={`${!expandCompleted ? rightArrow : expandIcon}`}
-                  alt="expand"
-                  handleClick={expand}
-                />
-                <p>Completed</p>
-                <p className="counter">{completedTodos.length}</p>
+        {activeLayout == "grid" ? (
+          <div className="todo-body">
+            {allTodos ? (
+              <div className="todo-list-header">
+                <div className="radiobtn"> </div>
+                <div className="task">Title</div>
+                <div className="due-time">Due Date</div>
+                <div className="important">Importance</div>
               </div>
-              {expandCompleted ? (
-                <div className="completed">
-                  {completedTodos.map((todo, todoIndex) => {
-                    return (
-                      <div className="todo-list-completed" key={todoIndex}>
-                        <div
-                          className="radiobtn"
-                          onClick={() => markIncomplete(todoIndex)}
-                        >
-                          <Button source={checkboxTick} alt="check" />
-                        </div>
-                        <div
-                          className="task"
-                          onClick={() =>
-                            editMenuToggle(todo.id, todo.sectionId)
-                          }
-                        >
-                          {todo?.title}
-                        </div>{" "}
-                        <div className="due-time">{todo?.due}</div>
-                        <div className="important">
-                          {todo?.isImportant ? (
-                            <Button source={star} />
-                          ) : (
-                            <Button source={star} />
-                          )}
-                        </div>
-                      </div>
-                    );
-                  })}
+            ) : (
+              <></>
+            )}
+            {incompleteTodos &&
+              incompleteTodos.map((todo, todoIndex) => {
+                return (
+                  <div className="todo-list-grid" key={todoIndex}>
+                    <div
+                      className="radiobtn"
+                      onClick={() => markCompleted(todoIndex)}
+                    >
+                      <Button source={checkbox} alt="check" />
+                    </div>
+                    <div
+                      className="task"
+                      onClick={() => editMenuToggle(todo.id, todo.sectionId)}
+                    >
+                      {todo?.title}
+                    </div>
+                    <div className="due-time">{todo.due}</div>
+                    <div className="important">
+                      <Button
+                        source={todo.isImportant ? starFilled : star}
+                        alt="Mark Important"
+                        handleClick={() => dispatch(toggleIsImportant(todo))}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            {completedTodos && completedTodos.length > 0 ? (
+              <div className="completed">
+                <div className="completed-actions">
+                  <Button
+                    source={`${!expandCompleted ? rightArrow : expandIcon}`}
+                    alt="expand"
+                    handleClick={expand}
+                  />
+                  <p>Completed</p>
+                  <p className="counter">{completedTodos.length}</p>
                 </div>
-              ) : (
-                <></>
-              )}
-            </div>
-          ) : (
-            <></>
-          )}
-        </div>
+                {expandCompleted ? (
+                  <div className="completed">
+                    {completedTodos.map((todo, todoIndex) => {
+                      return (
+                        <div
+                          className="todo-list-completed-grid"
+                          key={todoIndex}
+                        >
+                          <div
+                            className="radiobtn"
+                            onClick={() => markIncomplete(todoIndex)}
+                          >
+                            <Button source={checkboxTick} alt="check" />
+                          </div>
+                          <div
+                            className="task"
+                            onClick={() =>
+                              editMenuToggle(todo.id, todo.sectionId)
+                            }
+                          >
+                            {todo?.title}
+                          </div>{" "}
+                          <div className="due-time">{todo?.due}</div>
+                          <div className="important">
+                            <Button
+                              source={todo.isImportant ? starFilled : star}
+                              alt="Mark Important"
+                              handleClick={() =>
+                                dispatch(toggleIsImportant(todo))
+                              }
+                            />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <></>
+                )}
+              </div>
+            ) : (
+              <></>
+            )}
+          </div>
+        ) : (
+          <div className="todo-body">
+            {incompleteTodos &&
+              incompleteTodos.map((todo, todoIndex) => {
+                return (
+                  <div className="todo-list" key={todoIndex}>
+                    <div
+                      className="radiobtn"
+                      onClick={() => markCompleted(todoIndex)}
+                    >
+                      <Button source={checkbox} alt="check" />
+                    </div>
+                    <div
+                      className="task"
+                      onClick={() => editMenuToggle(todo.id, todo.sectionId)}
+                    >
+                      {todo?.title}
+                    </div>
+                    <div className="important">
+                      <Button
+                        source={todo.isImportant ? starFilled : star}
+                        alt="Mark Important"
+                        handleClick={() => dispatch(toggleIsImportant(todo))}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+
+            {completedTodos && completedTodos.length > 0 ? (
+              <div className="completed">
+                <div className="completed-actions">
+                  <Button
+                    source={`${!expandCompleted ? rightArrow : expandIcon}`}
+                    alt="expand"
+                    handleClick={expand}
+                  />
+                  <p>Completed</p>
+                  <p className="counter">{completedTodos.length}</p>
+                </div>
+                {expandCompleted ? (
+                  <div className="completed">
+                    {completedTodos.map((todo, todoIndex) => {
+                      return (
+                        <div
+                          className="todo-list todo-list-completed "
+                          key={todoIndex}
+                        >
+                          <div
+                            className="radiobtn"
+                            onClick={() => markIncomplete(todoIndex)}
+                          >
+                            <Button source={checkboxTick} alt="check" />
+                          </div>
+                          <div
+                            className="task"
+                            onClick={() =>
+                              editMenuToggle(todo.id, todo.sectionId)
+                            }
+                          >
+                            {todo?.title}
+                          </div>{" "}
+                          <div className="important">
+                            <Button
+                              source={todo.isImportant ? starFilled : star}
+                              alt="Mark Important"
+                              handleClick={() =>
+                                dispatch(toggleIsImportant(todo))
+                              }
+                            />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <></>
+                )}
+              </div>
+            ) : (
+              <></>
+            )}
+          </div>
+        )}
       </div>
       {menuToggle ? (
         <TodoEditor editId={editId} menuToggle={setMenuToggle} />

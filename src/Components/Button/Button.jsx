@@ -1,4 +1,10 @@
 import './button.scss'
+
+/**
+ * 
+ * @param {*} props 
+ * @returns 
+ */
 export const Button = (props) => {
   return (
     <button className='button'>

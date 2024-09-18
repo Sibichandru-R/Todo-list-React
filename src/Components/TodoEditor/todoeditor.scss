@@ -1,22 +1,21 @@
+@use "../../theme";
 .todo-editor {
   height: 97%;
   width: 50rem;
   padding: 2rem 1rem 0.5rem;
-  background-color: #faf9f8;
+  background-color: theme.$background-hover;
   display: flex;
   flex-direction: column;
   font-size: 1.2rem;
   font-weight: 200;
-  color: #4d4c4b;
-  // overflow: scroll;
+  color: theme.$todo-editor-background;
   box-shadow: -10px 0px 10px 0px #aaaaaa;
   .header {
     padding: 0.25rem 2.2rem;
     display: flex;
     justify-content: flex-start;
-    // position: fixed;
     height: 4rem;
-    background-color: #ffffff;
+    background-color: theme.$background-white;
 
     button {
       width: 3rem;
@@ -41,13 +40,13 @@
     height: 47rem;
     overflow-y: auto;
     .subtasks:hover {
-      background-color: #faf9f8;
+      background-color: theme.$background-hover;
     }
     .subtasks {
       padding: 1.25rem 2.2rem;
       display: flex;
       justify-content: flex-start;
-      background-color: #ffffff;
+      background-color: theme.$background-white;
 
       button {
         width: 3rem;
@@ -71,7 +70,7 @@
 
     .new-list {
       padding: 0.25rem 0 0.25rem 2.2rem;
-      background-color: #ffffff;
+      background-color: theme.$background-white;
       display: flex;
       justify-content: flex-start;
       align-items: center;
@@ -82,7 +81,6 @@
         justify-content: center;
       }
       input {
-        // width: 100%;
         border: 0;
         background-color: transparent;
         font-size: 1.2rem;
@@ -90,7 +88,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        color: #2564cf;
+        color: theme.$navbar-background;
       }
       input:focus {
         outline: 0;
@@ -107,7 +105,11 @@
       justify-content: flex-start;
       align-items: center;
       font-size: 1.2rem;
-      background-color: #ffffff;
+      background-color: theme.$background-white;
+      box-shadow:
+        rgba(0, 0, 0, 0.133) 0px 3.2px 7.2px 0px,
+        rgba(0, 0, 0, 0.11) 0px 0.6px 1.8px 0px;
+      outline: transparent;
 
       .icon {
         width: 3rem;
@@ -125,14 +127,14 @@
       }
     }
     .options:hover {
-      background-color: #ebebeb;
+      background-color: theme.$todo-editor-option-hover;
     }
     .seperator {
       margin: 1rem 0;
     }
     .new-note {
       padding: 1.25rem 0 1.25rem 2.2rem;
-      background-color: #ffffff;
+      background-color: theme.$background-white;
       display: flex;
       justify-content: flex-start;
       height: 4rem;
@@ -142,7 +144,7 @@
         font-size: 1.2rem;
       }
       input:focus {
-        background-color: #ffffff;
+        background-color: theme.$background-white;
         outline: 0;
       }
     }
@@ -158,7 +160,7 @@
       display: flex;
     }
     .icon:hover {
-      background-color: #faf9f8;
+      background-color: theme.$background-hover;
     }
     .end {
       margin-left: 20rem;

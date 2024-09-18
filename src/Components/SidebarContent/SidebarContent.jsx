@@ -1,8 +1,34 @@
 import { useEffect, useState } from "react";
-import "./sidebarContent.scss";
 import { useSelector } from "react-redux";
+
+import "./sidebarContent.scss";
+
+/**
+ *
+ * @param {{listId:string}} props
+ * @returns
+ */
 export const SidebarContent = (props) => {
   const listId = props.listId;
+  /**
+   * @name list
+   * @type {{
+   * name: string,
+   * todos:[
+   * {id: number
+   * ,sectionId: string
+   * ,title: string
+   * ,isCompleted: boolean
+   * ,isImportant: boolean
+   * ,due: date,
+   *  subtasks: [{id: number
+   * ,sectionId: string
+   * ,todoId: number
+   * ,subtaskTitle: string,
+   * isCompleted: boolean
+   * }]
+   * }]}}
+   */
   const list = useSelector((state) => state.todoListSection[listId]);
 
   const [count, setCount] = useState(
