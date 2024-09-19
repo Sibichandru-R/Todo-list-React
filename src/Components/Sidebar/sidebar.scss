@@ -1,0 +1,121 @@
+@use '../../theme';
+.sidebar-open {
+  height: 97%;
+  width: 30rem;
+  padding: 1rem 0.1rem 0.5rem;
+  background-color: theme.$background-white;
+  display: flex;
+  flex-direction: column;
+  font-size: 1rem;
+  font-weight: 200;
+  color: theme.$font-color-dark;
+
+  .sidebar-header {
+    padding: 1.3rem 1.8rem;
+    display: flex;
+    justify-content: flex-start;
+    .sidebar-toggle-button {
+      width: 3rem;
+      height: 3rem;
+    }
+  }
+  .splitter {
+    border-top: 0.15rem solid theme.$todo-editor-option-hover;
+    border-radius: 3rem;
+    height: 0.1rem;
+    margin: 1rem 3rem;
+  }
+  .sidebar-body {
+    display: flex;
+    flex-direction: column;
+    padding: 0.5rem 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 45rem;
+      .sidebar-content {
+      .icon {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    }
+    .contents:hover {
+      background-color: theme.$background-hover;
+
+    }
+    .active {
+      border-left: 0.2rem solid theme.$navbar-background;
+      background-color: theme.$active-button;
+    }
+    .active:hover {
+      background-color: theme.$active-button;
+    }
+  }
+
+  .add-todo {
+    display: flex;
+    .new-group {
+      height: 4rem;
+      width: 5rem;
+      display: flex;
+      place-content: center;
+    }
+    .new-group:hover,
+    .new-list:hover {
+      background-color: theme.$background-hover;
+    }
+    .new-list {
+      padding: 0.25rem 0 0.25rem 2.2rem;
+      display: flex;
+      justify-content: flex-start;
+      .icon {
+        height: 100%;
+        padding: 0.15rem 0.3rem;
+        display: flex;
+        justify-content: center;
+      }
+      input {
+        border: 0;
+        background-color: transparent;
+        font-size: 1.2rem;
+        padding: 1rem 0 1rem 1.9rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: theme.$navbar-background;
+      }
+      input:focus {
+        outline: 0;
+      }
+      .icon,
+      .content-name {
+        display: flex;
+        align-items: center;
+      }
+    }
+  }
+  .sidebar-footer {
+    display: flex;
+    align-items: flex-end;
+    .icon {
+      border: 0;
+      flex-grow: 1;
+      height: 4rem;
+      background-color: transparent;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .icon:hover {
+      background-color: theme.$background-hover;
+    }
+  }
+}
+
+.sidebar-close {
+  padding: 3rem 1.95rem;
+  .sidebar-toggle-button {
+    width: 3rem;
+    height: 3rem;
+  }
+}
