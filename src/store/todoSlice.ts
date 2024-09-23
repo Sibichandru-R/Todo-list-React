@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
-const d = JSON.parse(localStorage.getItem("initialTodoListState"));
+import { RootState } from "./store";
+const d = JSON.parse(localStorage.getItem("initialTodoListState") || "");
 const initialTodoListState = d
   ? d
   : [
@@ -49,6 +50,13 @@ const todoListSlice = createSlice({
         });
         localStorage.setItem("initialTodoListState", JSON.stringify(state));
       },
+      prepare(data) {
+        return {
+          payload: {
+            data,
+          },
+        };
+      },
     },
     deleteTodo: {
       reducer(state, action) {
@@ -58,12 +66,26 @@ const todoListSlice = createSlice({
         );
         localStorage.setItem("initialTodoListState", JSON.stringify(state));
       },
+      prepare(data) {
+        return {
+          payload: {
+            data,
+          },
+        };
+      },
     },
     toggleIscompleted: {
       reducer(state, action) {
         state[action.payload.sectionId].todos[action.payload.id].isCompleted =
           !state[action.payload.sectionId].todos[action.payload.id].isCompleted;
         localStorage.setItem("initialTodoListState", JSON.stringify(state));
+      },
+      prepare(data) {
+        return {
+          payload: {
+            data,
+          },
+        };
       },
     },
     toggleIsImportant: {
@@ -72,12 +94,26 @@ const todoListSlice = createSlice({
           !state[action.payload.sectionId].todos[action.payload.id].isImportant;
         localStorage.setItem("initialTodoListState", JSON.stringify(state));
       },
+      prepare(data) {
+        return {
+          payload: {
+            data,
+          },
+        };
+      },
     },
     changeDueDate: {
       reducer(state, action) {
         state[action.payload.sectioId].todos[action.payload.id].due =
           action.payload.due;
         // console.log(action.payload)
+      },
+      prepare(data) {
+        return {
+          payload: {
+            data,
+          },
+        };
       },
     },
     addNewSubtask: {
@@ -87,6 +123,13 @@ const todoListSlice = createSlice({
         ].subtasks.push(action.payload);
         localStorage.setItem("initialTodoListState", JSON.stringify(state));
       },
+      prepare(data) {
+        return {
+          payload: {
+            data,
+          },
+        };
+      },
     },
     removeSubtask: {
       reducer(state, action) {
@@ -94,6 +137,13 @@ const todoListSlice = createSlice({
           action.payload.subtask.todoId
         ].subtasks.splice(action.payload.index, 1);
         localStorage.setItem("initialTodoListState", JSON.stringify(state));
+      },
+      prepare(data) {
+        return {
+          payload: {
+            data,
+          },
+        };
       },
     },
     toggleSubtaskIscompleted: {
@@ -105,6 +155,13 @@ const todoListSlice = createSlice({
             .subtasks[action.payload.id].isCompleted;
         localStorage.setItem("initialTodoListState", JSON.stringify(state));
       },
+      prepare(data) {
+        return {
+          payload: {
+            data,
+          },
+        };
+      },
     },
     addNote: {
       reducer(state, action) {
@@ -112,11 +169,18 @@ const todoListSlice = createSlice({
           action.payload.note;
         localStorage.setItem("initialTodoListState", JSON.stringify(state));
       },
+      prepare(data) {
+        return {
+          payload: {
+            data,
+          },
+        };
+      },
     },
   },
 });
 
-export const selectAll = (state) => state.todoListSection;
+export const selectAll = (state: RootState) => state.todoListSection;
 export const {
   addTodoList,
   addNewTodo,
